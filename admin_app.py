@@ -1,7 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 import requests
-import json
+from tkinter import messagebox
+
+API_LINK = "http://127.0.0.1:8000/api/books/"
+
 
 class AdminApp:
     def __init__(self, root):
@@ -74,22 +77,53 @@ class AdminApp:
             "isbn": self.isbn_entry.get(),
         }
 
-        response = requests.post("http://127.0.0.1:8000/api/books/", json=book_data)
-        if response.status_code == 201:
-            self.refresh_books()
-        else:
-            print(f"Error: {response.status_code}")
+        try:
+            response = requests.post(API_LINK, json=book_data)
+            response.raise_for_status()  # Raise exception for 4xx/5xx status codes
+
+            if response.status_code == 201:
+                self.refresh_books()
+                messagebox.showinfo("Success", "Book created successfully!")
+                # Clear entry fields after successful creation
+                self.clear_entry_fields()
+            else:
+                messagebox.showerror("Error", f"Failed to create book. Status code: {response.status_code}")
+
+        except requests.exceptions.RequestException as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
 
     def refresh_books(self):
-        response = requests.get("http://127.0.0.1:8000/api/books/")
-        if response.status_code == 200:
-            books = response.json()
-            for row in self.books_tree.get_children():
-                self.books_tree.delete(row)
-            for book in books:
-                self.books_tree.insert("", "end", values=(book["title"], book["author"], book["price"], book["published_date"], book["description"], book["isbn"]))
-        else:
-            print(f"Error: {response.status_code}")
+        try:
+            response = requests.get(API_LINK)
+            response.raise_for_status()  # Raise exception for 4xx/5xx status codes
+
+            if response.status_code == 200:
+                books = response.json()
+                self.display_books(books)
+            else:
+                messagebox.showerror("Error", f"Failed to fetch books. Status code: {response.status_code}")
+
+        except requests.exceptions.RequestException as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
+
+    def display_books(self, books):
+        # Clear existing data in Treeview
+        for row in self.books_tree.get_children():
+            self.books_tree.delete(row)
+
+        # Insert new data into Treeview
+        for book in books:
+            self.books_tree.insert("", "end", values=(book["title"], book["author"], book["price"], book["published_date"], book["description"], book["isbn"]))
+
+    def clear_entry_fields(self):
+        # Clear entry fields after successful book creation
+        self.title_entry.delete(0, tk.END)
+        self.author_entry.delete(0, tk.END)
+        self.price_entry.delete(0, tk.END)
+        self.published_date_entry.delete(0, tk.END)
+        self.description_entry.delete(0, tk.END)
+        self.isbn_entry.delete(0, tk.END)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
