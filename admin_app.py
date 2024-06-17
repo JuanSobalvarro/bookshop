@@ -10,7 +10,7 @@ class AdminApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Bookshop Admin")
-        self.root.geometry("600x400")
+        self.root.geometry("1280x720")
         self.create_widgets()
 
     def create_widgets(self):
