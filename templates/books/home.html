@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book List</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Available Books</h1>
+    </header>
+    <div class="container">
+        <ul>
+            {% for book in books %}
+                <li>
+                    <h3><a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a></h3>
+                    <p>Author: {{ book.author }}</p>
+                    <p>Price: ${{ book.price }}</p>
+                    <p>Published Date: {{ book.published_date }}</p>
+                    <p>Description: {{ book.description }}</p>
+                    <p>ISBN: {{ book.isbn }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <footer>
+        <p>&copy; 2024 Bookshop. All rights reserved.</p>
+    </footer>
+</body>
+</html>

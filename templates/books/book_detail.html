@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title }} - Bookshop</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{{ book.title }}</h1>
+    </header>
+    <div class="container">
+        <div class="book-detail">
+            <h2>{{ book.title }}</h2>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p><strong>Price:</strong> ${{ book.price }}</p>
+            <p><strong>Published Date:</strong> {{ book.published_date }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Description:</strong> {{ book.description }}</p>
+            <button onclick="alert('This is a simulation. The purchase functionality is not implemented yet.')">Buy Now</button>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Bookshop. All rights reserved.</p>
+    </footer>
+</body>
+</html>
